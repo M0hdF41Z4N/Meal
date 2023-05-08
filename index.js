@@ -82,8 +82,6 @@ function deleteFromFav(mealId) {
 async function fetchMeals(text) {
     let url = "https://www.themealdb.com/api/json/v1/1/search.php?s="+text;
 
-    // console.log("fetch meal invoked");
-
     result_output.innerHTML = "Loading";
     // Try block
     try {
@@ -147,7 +145,6 @@ async function fetchMealById(mealId) {
 
 // Function to render all meals to HTML page or DOM structure
 function addMealToDom(meal) {
-    // console.log(meal);
     // Creating div 
     let div = document.createElement('div');
     // Adding class to div
@@ -215,8 +212,7 @@ function renderFavList() {
         list_head.innerHTML = "Your "+ fav_meals.length +" favourite meals."
          // Adding all meals to DOM
         for (let i=0 ; i<fav_meals.length; i++) {
-            // console.log(fav_meals[i]);
-            fetchMealById(fav_meals[i]);
+            let temp = fetchMealById(fav_meals[i]);
         }
     }
 }
@@ -252,7 +248,7 @@ async function clickHandler(event) {
         // Condition if search text empty or not
         if (search_text) {
             // Function call to fetch all meals matching search term
-            await fetchMeals(search_text);
+            let meals = await fetchMeals(search_text);
             // reseting input field or search field
             input_ele.value = '';
         }else {
