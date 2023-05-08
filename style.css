@@ -1,0 +1,71 @@
+/* Resetting default values */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Customizing Search field */
+
+.form-control {
+    transition: none !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    border:none;
+}
+
+#search:focus {
+    outline: none !important;
+}
+
+/* Customizing navbar */
+.nav-item .active {
+    background-color: rgb(255,193,7) !important;
+}
+
+/* customizing button */
+
+.btn {
+    padding: 5px;
+    margin: 5px;
+}
+
+/* Cusotmizing card */
+
+.card {
+    width: 18rem;
+    margin: 5%;
+}
+
+
+
+/* .search-section {
+    border: 1px solid black;
+} */
+
+
+/* Desiging delete button */
+#delete-btn {
+    width: 25px;
+    height: 25px;
+    margin-top: 5px;
+}
+
+
+/* Customizing icon */
+.bi-heart-fill {
+    color: red !important;
+}
+/* Customizing List */
+.list-group-item {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+}
+
+/* Customizing List image */
+#fav-list li img {
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
+}
+
