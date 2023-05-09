@@ -10,11 +10,12 @@ let result_output = document.getElementById("result-header");
 let result_section = document.querySelector("#result-section .row"); 
 // Getting favourite list from HTML
 let list = document.getElementById("fav-list");
-// console.log(list);
 //  Getting product element from HTML
 let product = document.getElementById("product-details");
 // To store meals with persistant
 let meals ="MEALS", favMeals = "FAV";
+
+let forms = document.querySelector('form');
 
 
 
@@ -27,8 +28,8 @@ function detailsOf(mealId){
 function addToFav(mealId) {
     // If Already added
     if (fav_meals.includes(mealId)) {
-        // Show popup
-        console.log("Already added");
+        // For debugging purpose
+        // console.log("Already added");
     }else {
         // Add meal id to list
         fav_meals.push(mealId);
@@ -39,10 +40,8 @@ function addToFav(mealId) {
 
 // Function to delete favourite meal from list
 function deleteFromFav(mealId) {
-    // console.log("Deleting fav");
     // Filtering the list
     let updatedList = fav_meals.filter(ele => ele != mealId);
-    // console.log(updatedList);
     // Updating favourite list
     fav_meals = updatedList;
     // Updating local storage
@@ -56,22 +55,20 @@ function deleteFromFav(mealId) {
 // IIFE to invoke function according to page 
 (function () {
     // Getting favourite meal from local storage when fav list is empty
-    if ((localStorage[favMeals] != undefined) && (fav_meals.length < 1)) {
+    if ((localStorage[favMeals] != '') && (fav_meals.length < 1)) {
         fav_meals = localStorage.getItem(favMeals).split(',');
     }
-    // Guessing Favourite list page
-    if (list) {
+    // when Favourite list page visited
+    if (window.location.href.includes('favourite_page.html')) {
         // Rendering favourite list;
         renderFavList();
     }
-    // Guessing Meal detail page
-    else if (product) {
-        // console.log("Product page called");
+    // when Meal detail page visited
+    else if (window.location.href.includes('product_page.html')) {
         // Getting meal id from local storage
         let mealId = localStorage.getItem("ID");
         // Fetching meal from API
         let meal = fetchMealById(mealId);
-        // console.log(meal);
         // Rendering details to HTML page
         renderProductDetails(meal);
     }
@@ -89,7 +86,6 @@ async function fetchMeals(text) {
     let response = await fetch(url);
     // API response to json
     let apiResponse = await response.json();
-    // console.log(apiResponse.meals.length);
     let meals = apiResponse.meals;
     // adding all meals to array
     for (let i=0 ; i<meals.length; i++) {
@@ -101,11 +97,10 @@ async function fetchMeals(text) {
     // Rendering all meals in array to HTML Page
     renderAllMeals();
     // For Debugging purpose
-    return meals;
+    // return meals;
         }
     // Catch block
     catch(error) {
-        // console.log(error);
         // Handling Error
         result_output.innerHTML = "Internal Server Error ! Try Something else";
     }
@@ -120,7 +115,6 @@ async function fetchMealById(mealId) {
         let response = await fetch(url);
         // API response to json
         let meal = await response.json();
-        // console.log(meal.meals);
         // Condition for Favourite List Page
         if (meal && list) {
             // Adding list element (favourite meal) to HTML DOM
@@ -155,8 +149,8 @@ function addMealToDom(meal) {
             <img src="${meal.strMealThumb}" class="card-img-top" alt="meal-img">
             <div class="card-body" id="${meal.idMeal}">
                 <h5 class="card-title">${meal.strMeal}</h5>
-                <a href="./product_page.html" class="btn btn-primary" onclick="detailsOf(${meal.idMeal})">View Meal</a>
-                <a href="#" class="btn bi bi-heart" id="fav-btn"></a>
+                <a href="./product_page.html" class="btn btn-warning text-white" onclick="detailsOf(${meal.idMeal})">View Meal</a>
+                <a class="btn bi bi-${fav_meals.includes(meal.idMeal) ? 'heart-fill' : 'heart'}" id="fav-btn"></a>
             </div>
         </div>
         `
@@ -181,7 +175,6 @@ function renderAllMeals() {
 function addFavMealToDom(meal) {
     // Creating list item element
     let list_item = document.createElement('li') ;
-    // console.log(meal);
     // Adding class to element
     list_item.classList.add('list-group-item');
     // Adding ID element
@@ -212,7 +205,7 @@ function renderFavList() {
         list_head.innerHTML = "Your "+ fav_meals.length +" favourite meals."
          // Adding all meals to DOM
         for (let i=0 ; i<fav_meals.length; i++) {
-            let temp = fetchMealById(fav_meals[i]);
+            fetchMealById(fav_meals[i]);
         }
     }
 }
@@ -225,41 +218,38 @@ function renderProductDetails(meal) {
     let tags =document.getElementById('tags');
     let region =document.getElementById('region');
     let category =document.getElementById('category');
+    let video_link = document.getElementById('video-link');
+    video_link.href = meal.strYoutube;
     product_img.setAttribute('src',meal.strMealThumb);
     product_title.innerHTML = meal.strMeal;
     ingredents.innerHTML = meal.strInstructions;
     tags.innerHTML = meal.strTags;
     region.innerHTML= meal.strArea;
     category.innerHTML = meal.strCategory;
-
 }
 
 
 
 
 // Funtion to handle diffenet clicks on pages
-async function clickHandler(event) {
+function clickHandler(event) {
     let target = event.target;
-    // console.log(target);
     // Condition for when search btn clicked
     if (target.id === 'btn-search') {
-        // console.log("Loading for ",input_ele.value);
         let search_text = input_ele.value;
         // Condition if search text empty or not
         if (search_text) {
             // Function call to fetch all meals matching search term
-            let meals = await fetchMeals(search_text);
+            fetchMeals(search_text);
             // reseting input field or search field
             input_ele.value = '';
         }else {
-            // console.log("Can't be empty.");
             // Error Handling
             result_output.innerHTML = "Can't be empty.";
         } 
     }
     // Condition for : when favourite btn clicked
     else if (target.id === 'fav-btn' ) {
-        // console.log("fav pressed");
         target.classList.remove("bi-heart");
         // Filling btn with color
         target.classList.add("bi-heart-fill");
@@ -272,10 +262,8 @@ async function clickHandler(event) {
     }
     // Condition for : when delete btn clicked
     else if (target.id === 'delete-btn') {
-        // console.log("delete pressed");
         // Getting parent node
         let list_item = target.parentNode;
-        // console.log(list_item.id);
         // Function call to delete meal from favourite list with meal id
         deleteFromFav(list_item.id);
     }
@@ -284,3 +272,14 @@ async function clickHandler(event) {
 
 // Event delegation
 document.addEventListener('click',clickHandler);
+
+
+
+// Check if we are at home page 
+if (window.location.href.includes('index.html'))
+{
+    // Removing default behaviour of form
+    forms.addEventListener('submit',function(event) {
+        event.preventDefault();
+    });
+}
