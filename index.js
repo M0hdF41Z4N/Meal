@@ -55,7 +55,7 @@ function deleteFromFav(mealId) {
 // IIFE to invoke function according to page 
 (function () {
     // Getting favourite meal from local storage when fav list is empty
-    if ((localStorage[favMeals] != '') && (fav_meals.length < 1)) {
+    if ((localStorage.getItem(favMeals) != null && localStorage[favMeals] != '') && (fav_meals.length < 1)) {
         fav_meals = localStorage.getItem(favMeals).split(',');
     }
     // when Favourite list page visited
