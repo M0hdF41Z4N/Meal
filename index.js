@@ -276,7 +276,7 @@ document.addEventListener('click',clickHandler);
 
 
 // Check if we are at home page 
-if (window.location.href.includes('index.html'))
+if (window.location.href.includes('Meal'))
 {
     // Removing default behaviour of form
     forms.addEventListener('submit',function(event) {
